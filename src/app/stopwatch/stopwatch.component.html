@@ -1,0 +1,8 @@
+<p class="timer">{{time.toUTCString().substr(17,8)}}</p>
+
+<div class="buttons">
+  <button class="btn btn-dark" (click)="startTimer()">Start / Stop</button>
+  <button class="btn btn-dark" (dblclick)="waitTimer()">Wait</button>
+  <button class="btn btn-dark" (click)="resetTimer()">Reset</button>
+</div>
+
