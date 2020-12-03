@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { timer } from 'rxjs';
+
 
 @Component({
   selector: 'app-stopwatch',
@@ -8,12 +10,19 @@ import { Component } from '@angular/core';
 export class StopwatchComponent {
   isStopwatchRun = false;
   interval;
+  subscribes;
   time = new Date(Date.UTC(0, 0, 0, 0, 0, 0));
 
   timer(): void {
-    this.interval = setInterval(() => {
-      this.time.setSeconds(this.time.getSeconds() + 1);
-    }, 1000);
+    this.interval = timer(0, 1000);
+    this.subscribes = this.interval.subscribe(second => {
+      this.time.setUTCSeconds(second);
+      if (second === 60) {
+        this.subscribes.unsubscribe();
+        this.timer();
+      }
+      console.log(second);
+    });
   }
 
   startTimer(): void {
@@ -28,7 +37,7 @@ export class StopwatchComponent {
   }
 
   stopTimer(): void {
-    clearInterval(this.interval);
+    this.subscribes.unsubscribe();
   }
 
   resetTimer(): void {
@@ -40,7 +49,7 @@ export class StopwatchComponent {
   waitTimer(): void {
     this.isStopwatchRun = false;
     if (!this.isStopwatchRun) {
-      this.stopTimer();
+      this.subscribes.unsubscribe();
     }
   }
 }
